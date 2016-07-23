@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>the game</title>
+    <style>
+        html {
+            background:url(background.jpg)
+            no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        body{
+            color: #2519ff;
+            margin: 0px;
+            text-align: center;
+        }
+        canvas {
+
+            border: 2px solid #d3d3d3;
+            background-color: #0bffda;
+            margin: 0px;
+        }
+        h1{
+            font-feature-settings: normal;
+            font-family: Geneva, Tahoma, Verdana, sans-serif;
+            font-variant: small-caps;
+            font-style: normal;
+            color: #ffe424;
+        }
+        #gameover{
+            margin: 0px ;
+            padding: 0px;
+            color: #ff0e16;
+        }
+    </style>
+</head>
+<body onload="gameOpen()">
+<h1>Super Mario is Back!!!</h1>
+<h3>Press Enter to play/pause and press p to replay</h3>
+
+<audio id="music" controls loop >
+    <source src="backmusic.mp3" type='audio/mp4'>
+</audio>
+<audio id="music1" >
+    <source src="lost.mp3" type='audio/mp4'>
+</audio>
+<br/>
+<script>
+    var paused=true;
+    var life=3;
+    var died=0;
+    var ob=0;
+    var res=0;
+    document.addEventListener('keydown', pauseGameKeyHandler, false);
+    function pauseGameKeyHandler(e) {
+        var keyCode = e.keyCode;
+        switch(keyCode){
+            case 13: //p
+                togglePause();
+                break;
+            case 80:
+                location.reload();
+                break;
+        }
+    }
+    function togglePause() {
+        if (paused) { // Already paused
+            // resume the game!
+            paused = false;
+        } else{ // Only other option is the game isn't paused, means currently playing
+            // pause the game!
+            paused = true; // Game was paused, so you're now paused
+        }
+    }
+
+
+
+
+    var  backmusic =new sound("backmusic.mp3");
+    function gameOpen(){
+        gameArea.begin();
+        grass=new createParts(0,320,1360,80,"green","stage");
+        character=new createParts(10,259,30,62,"#d3d3d3","mario");
+        if(backmusic.pause()==true)
+            backmusic.play();
+
+        //szzcore = new component("30px", "Consolas", "black", 280, 40, "text");
+
+    }
+
+    var ctx;
+    var s=0;
+    var a=0;
+    var obstacles = [];
+    var obtime=0;
+    var mario=["mario1.png","mario2.png","mario3.png"];
+    var clouds=["cl.jpg","cl2.jpg","cl3.png"];
+    var cloudsview=[];
+    var cltime=0;
+    var gameArea={
+        canvas:document.createElement("canvas"),
+        begin:function(){
+            this.canvas.height=400;
+            this.canvas.width=1360;
+            this.context=this.canvas.getContext("2d");
+            document.body.insertBefore(this.canvas,document.getElementById("fun"));
+            this.frameno=0;
+            this.interval=setInterval(updategame,8);
+
+
+            window.addEventListener('keydown', function (e) {
+                gameArea.keys = (gameArea.keys || []);
+                gameArea.keys[e.keyCode] = (e.type == "keydown");
+            });
+            window.addEventListener('keyup', function (e) {
+                gameArea.keys[e.keyCode] = (e.type == "keydown");
+            });
+        },
+        clear : function() {
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            ctx = gameArea.context;
+            ctx.font="30px"+" "+"sans sheriff";
+            ctx.fillStyle="black";
+            var s=obstacles.length;
+            ctx.fillText("Score: "+s,1100,50);
+            ctx.fillText("Lives: "+(life),1100,90);
+        },
+        stop : function () {
+            clearInterval(this.interval);
+        }
+    }
+    function createParts(x,y,w,h,color,type)
+    {    var i=0;
+        this.x=x;
+        this.y=y;
+        this.width=w;
+        this.height=h;
+        this.dx=0;
+        this.dy=0;
+        this.index=0;
+        this.update =function()
+        {   this.x += this.dx;
+            this.y += this.dy;
+            ctx = gameArea.context;
+            if(type=="mario") {
+                if(this.dx!=0)this.index++;
+                if(this.index==2)this.index=0;
+                if(died==1){alert("died daa this.y="+this.y);died=0;}
+                var  base_image = new Image();
+                base_image.src = mario[(this.index%2)];
+
+                ctx.drawImage(base_image,this.x,this.y );
+
+
+            }
+            else if(type=="stage")
+            {
+                var  base_image1 = new Image();
+
+                base_image1.src = "stage.jpg";
+
+                ctx.drawImage(base_image1,this.x,this.y );
+
+            }
+            else if(type=="obstacle")
+            {
+                var  base_image1 = new Image();
+
+                base_image1.src = "obstacle.jpg";
+
+                ctx.drawImage(base_image1,this.x,this.y,this.width,this.height );
+            }
+            else if(type=="clouds"){
+                var  base_image1 = new Image();
+
+                base_image1.src = clouds[this.width];
+
+                ctx.drawImage(base_image1,this.x,this.y );
+
+            }
+            else {
+                ctx.fillStyle = color;
+
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+        this.crashWith = function(otherobj) {
+            var myleft = this.x;
+            var myright = this.x + (this.width);
+            var mytop = this.y;
+            var mybottom = this.y + (this.height);
+            var otherleft = otherobj.x;
+            var otherright = otherobj.x + (otherobj.width);
+            var othertop = otherobj.y;
+            var otherbottom = otherobj.y + (otherobj.height);
+            var crash = true;
+            if ((mybottom -2< othertop) || (mytop > otherbottom) || (myright-4 < otherleft) || (myleft > otherright)) {
+                crash = false;
+            }
+            return crash;
+        }
+
+    }
+    function sound(src) {
+        if(src=="backmusic.mp3")
+            this.sound = document.getElementById("music");
+        else
+            this.sound = document.getElementById("music1");
+        this.sound.src = src;
+        this.sound.setAttribute("preload", "auto");
+
+        this.sound.style.display = "none";
+
+        this.play = function () {
+            this.sound.play();
+        }
+        this.stop = function () {
+            this.sound.pause();
+        }
+        this.pause =function(){
+            return this.sound.paused;
+        }
+    }
+    function updategame() {
+        var x, height, i;
+        if(died==1){character.dy=0;character.y=259;s=0;died=0;character.x=res+60;obtime=0;cltime=0;}
+        if (paused == true)
+            backmusic.stop();
+        else {
+
+            ctx = gameArea.context;
+            if (backmusic.pause() == true)
+            {
+                backmusic.play();}
+            for (i = 0; i < obstacles.length; i++)
+                if (character.crashWith(obstacles[i])) {
+                    // var music = document.getElementById("music");
+                    backmusic.stop();
+                    var lostmusic=new sound("lost.mp3");
+                    lostmusic.play();
+                    life--;
+                    if(life!=0) {
+                        gameArea.stop();
+                        setTimeout(function(){died=1;res=character.x;gameArea.clear();ob=obtime;gameOpen();},4000);
+
+                    }
+                    else
+                    {  var g=document.getElementById("gameover");
+                        g.innerHTML="Game Over:-(";
+                        gameArea.stop();
+                    }
+                    return;
+                }
+            gameArea.clear();
+            gameArea.frameno++;
+            grass.update();
+            if (obtime == 0)
+                obtime = Math.floor(Math.random() * 150 + 230 + gameArea.frameno);
+            if (obtime != 0 && obtime == gameArea.frameno) {
+                x = gameArea.canvas.width;
+                y = gameArea.canvas.height;
+                height = Math.floor(Math.random() * 20 + 15);
+                obstacles.push(new createParts(x, y - grass.height - height, 30, height, "#FF1A98","obstacle"));
+                if(obstacles.length%4==0)
+                    obstacles[obstacles.length-1].dx=-1;
+                obtime = 0;
+            }
+            if (cltime == 0)
+                cltime = Math.floor(Math.random() * 300 + 600 + gameArea.frameno);
+            if (cltime != 0 && cltime == gameArea.frameno) {
+
+                cloudsview.push(new createParts(gameArea.canvas.width, 30, a++, 56, "red", "clouds"));
+                cltime = 0;
+                if (a == 3)a = 0;
+            }
+
+
+            if (s != 0 && s <= 101) {
+                if (s <= 50) {
+                    s++;
+                    character.dy = -1;
+                }
+                else {
+                    s++;
+                    character.dy = 1;
+                }
+
+            }
+            else {
+                s = 0;
+
+                character.dy = 0;
+                if (gameArea.keys && gameArea.keys[32]) {
+                    s++;
+                    character.dy = -1;
+                }
+            }
+            character.dx = 0;
+            if (gameArea.keys && gameArea.keys[37] && character.x > 0) {
+                character.dx = -1;
+            }
+            if (gameArea.keys && gameArea.keys[39])
+                character.dx = 1;
+
+            for (i = 0; i < obstacles.length; i++) {
+                obstacles[i].x--;
+                obstacles[i].update();
+            }
+            for (i = 0; i < cloudsview.length; i++) {
+                cloudsview[i].x--;
+                cloudsview[i].update();
+            } if(died==1){character.dy=(-1)*character.dy;died=0;}
+            character.update();
+
+        }
+    }
+
+</script>
+
+<div id="fun"></div>
+<h1 id="gameover"></h1>
+</body>
+</html>

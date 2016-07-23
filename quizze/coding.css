@@ -1,0 +1,58 @@
+html{
+    background:url("back.png") no-repeat center center fixed;
+    background-size:100% 100%;
+    margin-left: 20px;
+    font-family: Verdana,"Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size:15px;
+    color: #ffffff;
+}
+
+h2,#title{
+    text-align: center;
+    color: #0ec5f2;
+    font-family:Helvetica,Verdana,Arial,sans-serif;
+}
+#input,#output,#samplein,#sampleout{
+    margin:20px;
+    margin-left: 0px;
+}
+#inputformat,#outputformat,#samplein,#sampleout{
+    padding:10px;
+    padding-left: 0px;
+    margin:10px;
+    margin-left: 0px;
+}
+#sampleinput,#sampleoutput{
+    padding: 10px;
+    padding-left: 0px;
+    padding-top: 0px;
+    margin:20px;
+    margin-left: 0px;
+    border: 1px solid #cdcdcd;
+    width:500px
+}
+textarea{
+    border-radius: 5px;
+    margin: 5px;
+    margin-left: 0px;
+}
+input[type='submit']{
+    background-color: #5bc856;
+    border: 0;
+    margin-left: 610px;
+    padding:10px;
+    border-radius: 2px;
+    font-family: Arial;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+
+}
+input[type='submit']:hover {
+    background: #16aa56;
+}
+input[type='submit']:active {
+    position:relative;
+    top:1px;
+}

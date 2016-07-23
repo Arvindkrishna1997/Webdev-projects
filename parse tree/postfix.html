@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Binary Tree</title>
+    <link href="graph.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<br/>
+<h2>Parse Tree</h2>
+<br/>
+<canvas id="canvas" width="700" height="500" style="border:1px solid #d3d3d3;"></canvas>
+<h3 id="answer"></h3>
+<script>
+    var infix=prompt("Enter the expression:");    //To get the expression
+    var l=infix.length;
+    var postfix=[];
+    var x,y;
+    document.getElementById("answer").innerHTML="Answer is: "+eval(infix);   //To evaluate the expression
+    topostfix(infix,l);
+    function getweight(p)           //returns the precedence order of the operators
+    {
+        switch(p)
+        {   case '^':return 3;
+            case '/':
+            case '%':
+            case '*':return 2;
+            case '+':
+            case '-':return 1;
+        }
+        return 0;
+    }
+    function topostfix(infix,l)   //To convert the infix to postfix.
+    {   var stack= [];
+        var weight=0;
+        var i=0;
+        var k=0;
+        var ch;
+        while(i<l)
+        {
+            ch=infix[i];
+            if(ch=='(')
+            {
+                stack.push(ch);
+                i++;
+                continue;
+            }
+            //console.log("(");
+            if(ch==')')
+            {
+                while(stack.length&&stack[stack.length-1] != '(' ) {
+                    postfix[k++]=stack[stack.length-1];
+                    stack.pop();
+                }
+                if(stack.length)
+                        stack.pop();
+                i++;
+                 continue;
+            }
+
+             //console.log(")");
+                weight=getweight(ch);
+                if(weight==0)
+                {
+                    postfix[k++]=ch;
+                    //console.log(postfix);
+                }
+                else
+                {   //console.log("saw an operator");
+
+                    if(stack.length==0) {
+                        stack.push(ch);
+                        console.log("stack" + stack);
+                    }
+                    else
+                    {
+                        while(stack.length&&stack[stack.length-1]!='('&& weight<=getweight(stack[stack.length-1]))
+                        {
+                            postfix[k++]=stack[stack.length-1];
+
+                            stack.pop();
+                        }
+                        stack.push(ch);
+                        //console.log(stack);
+                    }
+                }
+            i++;
+        }  i=0;
+        while(stack.length)
+        {
+            postfix[k++]=stack[stack.length-1];
+            stack.pop();
+        }
+       /* for(i=stack.length-1;i>=0;i--)
+        {
+            postfix[k++]=stack[i];
+        }*/
+       // alert(postfix);
+    }
+    //alert(postfix);
+    function et(value)    //a constructor to create binary tree;
+    {
+        this.value=value;
+        this.left=-2;
+        this.right=-2;
+    }
+    function constructTree(postfix)    //To construct a binary tree;
+    {
+        var st=[];
+        var t,t1,t2;
+        for(var i=0;i<postfix.length;i++)
+        {
+            if(getweight(postfix[i])==0)
+            {
+                t=new et(postfix[i]);
+                st.push(t);
+            }
+            else
+            {
+                t=new et(postfix[i]);
+                t1=st[st.length-1];
+                st.pop();
+                t2=st[st.length-1];
+                st.pop();
+                t.left=t2;
+                t.right=t1;
+                st.push(t);
+            }
+
+        }
+        t=st[st.length-1];
+        st.pop();
+        return t;
+
+    }
+    var root=constructTree(postfix);
+  /*  for(var property in root.left) {
+        alert(property + "=" + root[property]);
+    }*/
+     //alert(root["left"]);
+    x=canvas.width/2+0.5;y=50;
+    var c=document.getElementById("canvas");
+    var ctx=c.getContext("2d");
+    var per=5;
+    draw(root,x,y,per);
+
+    function draw (node,x,y,per)    //To draw the parse tree;
+    {
+        var x1,y1;
+        if(node["value"])
+        {
+            ctx.font="30px Arial";
+            ctx.fillText(node["value"],x-5,y+20);
+        }
+        if(node["right"]["value"])
+        {
+            ctx.beginPath();
+            ctx.strokeStyle="rgb(120,120,120)";
+            ctx.moveTo(x+15,y+10);
+            x1=(x+100-per);
+            y1=(y+100-per);
+            ctx.lineTo(x1,y1);
+            ctx.stroke();
+            per=per+10;
+            draw(node["right"],x1,y1,per);
+        }
+        if(node["left"]["value"])
+        {   ctx.beginPath();
+            ctx.strokeStyle="rgb(120,120,120)";
+            ctx.moveTo(x-3,y+10);
+            ctx.lineTo(x-100+per,y+100-per);
+            ctx.stroke();
+            per=per+10;
+            draw(node["left"],x-100-10+per,y+100+10-per,per);
+        }
+    }
+</script>
+</body>
+</html>

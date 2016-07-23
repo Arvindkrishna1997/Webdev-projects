@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hot repos</title>
+    <link href="hotrepos.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h2>hottest repositories created in the last week</h2>
+<br/>
+<button id="fetch" onclick="fetch()">Fetch Repos</button>
+<br/><br/>
+<canvas id="myCanvas" width="500" height="300" style="border-bottom:3px solid #000000;border-left:3px solid #000000;
+  ">
+    Your browser does not support the HTML5 canvas tag.
+</canvas>
+<br/><br/>
+<div>
+    <span id="red">red</span>->Javascript
+    <br/><br/>
+    <span id="blue">blue</span>->Html
+    <br/><br/>
+    <span id="green">green</span>->Css
+    <br/><br/>
+    <span id="pink">pink</span>->php
+    <br/><br/>
+    <span id="yellow">yellow</span>->C++
+    <br/><br/>
+    <span id="crimson">Crimson</span>->C
+</div>
+
+<script>
+    var  lastweek = new Date();
+
+    lastweek.setDate(lastweek.getDate() - 7);
+    var dd = lastweek.getDate();
+    var mm = lastweek.getMonth()+1; //January is 0!
+
+    var yyyy = lastweek.getFullYear();
+    if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} lastweek = yyyy+'-'+mm+'-'+dd;
+    //alert(lastweek);
+
+    var javascript=0,html=0,css=0,php=0;
+      var cpp=0,c=0;
+         function fetch() {
+             alert("fetching the datas from "+lastweek);
+             var url = "https://api.github.com/search/repositories?q=created:>"+lastweek+"+language:&sort=stars&order=desc";
+             var xhttp = new XMLHttpRequest();
+             xhttp.onreadystatechange = function () {
+                 // alert("came");
+                 if (xhttp.status == 200 && xhttp.readyState == 4) {
+                     var array = JSON.parse(xhttp.responseText);
+
+                     getDetails(array);
+                 }
+             };
+             xhttp.open("GET", url, true);
+             xhttp.send();
+         }
+             function getDetails(array) {       //A function the assign the datas.
+                   var len=array.items.length;
+                 for(var i=0;i<len;i++)
+                 {
+                     if(array.items[i].language==="HTML")
+                             html++;
+                     if(array.items[i].language==="JavaScript")
+                             javascript++;
+                     if(array.items[i].language==="CSS")
+                             css++;
+                     if(array.items[i].language==="PHP")
+                             php++;
+                     if(array.items[i].language==="C++")
+                             cpp++;
+                     if(array.items[i].language==="C")
+                             c++;
+                 }
+                 c=document.getElementById("myCanvas");
+                 var ctx=c.getContext("2d");
+                 var Max=300,x=0;
+                 ctx.height =Max;
+                 ctx.fillStyle="red";
+                 ctx.fillRect(x,Max-(javascript*35),30,Max);
+                 x+=30;
+                 ctx.fillStyle="blue";
+                 ctx.fillRect(x,Max-(html*35),30,Max);
+                 x+=30;
+                 ctx.fillStyle="green";
+                 ctx.fillRect(x,Max-(css*35),30,Max);
+                 x+=30;
+                 ctx.fillStyle="pink";
+                 ctx.fillRect(x,Max-(php*35),30,Max);
+                 x+=30;
+                 ctx.fillStyle="yellow";
+                 ctx.fillRect(x,Max-(cpp*35),30,Max);
+                 x+=30;
+                 ctx.fillStyle="crimson";
+                 ctx.fillRect(x,Max-(c*30),35,Max);
+                 x+=30;
+             }
+
+
+</script>
+</body>
+</html>

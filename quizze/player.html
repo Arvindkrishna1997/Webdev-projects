@@ -1,0 +1,40 @@
+<!--<?php
+$servername="localhost";
+$username="root";
+$password="";
+$dbname="quizDB";
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+if(!isset($_SESSION["quesno"]))
+    $quesno=$_SESSION["quesno"]=1;
+else
+    $quesno=$_SESSION["quesno"];
+$sql = "SELECT * FROM quiz2 WHERE id='$quesno'";
+$result = $conn->query($sql);
+$flag=0;
+
+
+
+if ($result->num_rows > 0) {
+    // output data of each row
+    while($row = $result->fetch_assoc()) {
+        if($row["id"]== $quesno)
+        {
+            echo "<div id='question'>".$row['question']."</div>";
+            echo "<div id='optiona'>".$row['optiona']."</div>";
+            echo "<div id='optionb'>".$row['optionb']."</div>";
+            echo "<div id='optionc'>".$row['optionc']."</div>";
+            echo "<div id='optiond'>".$row['optiond']."</div>";
+            $_SESSION["answer"]=$row["answer"];
+            $flag=1;
+        }
+    }
+
+}
+
+    echo "<div id='win'></div>";
+?>-->

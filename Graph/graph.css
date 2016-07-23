@@ -1,0 +1,26 @@
+canvas{
+    border: 2px solid red;
+    background-color: white;
+    color:#0d0d0d;
+    cursor:pointer;
+
+}
+body{
+    text-align:center;
+    background: url(bg1.jpg) center center fixed no-repeat;
+    background-size:100% 100%;
+    color:white;
+}
+textarea{
+    color: white;
+    background-color: black;
+}
+h2{
+    color:white;
+    margin: 0px;
+    padding:0px;
+}
+#answer{
+    color:white;
+}
+

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nim Game</title>
+    <link rel="stylesheet" href="nim.css" type="text/css">
+</head>
+<body>
+<h2>Nim Game</h2>
+<script>
+    var n=prompt("Enter the number of heaps:");
+    var button;
+    function userclick(ele)  //executed when the user clicks the heaps
+    {   document.getElementById("computer").disabled=false;
+        var cid=ele;
+       // alert("came here"+cid);
+        for(var i=0;i<n;i++)   //to reduce the value and disable the buttons
+        {    //alert("for"+i);
+            if(cid==i) {
+               // alert(cid+"correct answer");
+              var value=document.getElementById(cid).innerHTML;
+                if(value>0)
+                --value;
+                document.getElementById(cid).innerHTML=value;
+            }
+            else
+                document.getElementById(i).disabled=true;
+        }
+
+
+
+        var container = document.getElementById("h"+cid);  //to change the no of matchsticks
+        container.innerHTML="";
+         value=document.getElementById(cid).innerHTML;
+        for (var j=0 ; j < value; ++j) {
+            var img = new Image();
+            img.src = "matchstick.png";
+            container.appendChild(img);}
+        if(value==0)
+        {  img = new Image();
+            img.src = "matchstick.png";
+            img.style.opacity=0.0;
+            container.appendChild(img);
+
+        }
+
+        var flag=0;
+        for(i=0;i<n;i++)    //check for the winning position
+        {
+            value=document.getElementById(i).innerHTML;
+            if(value!=0)
+                flag=1;
+            else document.getElementById(i).disabled =true;
+        }
+
+        if(flag==0){
+            alert("You win");
+            document.getElementById("computer").disabled=true;
+            location.reload();
+        }
+    }
+    for(var i=0;i<n;i++)              //executed to assign random heapsizes at the beginning.
+    {
+        var div=document.createElement("div");
+       // div.innerHTML=i;
+        div.id="h"+i;
+        document.body.appendChild(div);
+
+        button=document.createElement("button");
+        button.id=i;
+        button.className="heaps";
+        button.onclick=function() {//alert(this.id);
+            userclick(this.id);};
+        button.innerHTML=Math.floor(Math.random()*10+1);
+        document.body.appendChild(button);
+        document.write("<br><br/><br/>");
+        var container = document.getElementById("h"+i); //to draw the match sticks
+        var value=document.getElementById(i).innerHTML;
+        for (var j=0 ; j < value; ++j) {
+            var img = new Image();
+            img.src = "matchstick.png";
+            container.appendChild(img);
+        }
+
+    }
+    button=document.createElement("button");  //make the computer button
+    button.id="computer";
+    button.innerHTML="computer";
+    button.onclick=function() {computer();};
+    document.body.appendChild(button);
+
+    function computer()    //called when its computer's turn.
+    {   var x;
+        document.getElementById("computer").disabled=true;
+        for(var i=0;i<n;i++)
+        document.getElementById(i).disabled=true;
+
+         x=document.getElementById(0).innerHTML;
+        for( i=1;i<n;i++)     //to calculate the nimsum.
+        {
+            x=x^document.getElementById(i).innerHTML;
+        }
+        //alert(x);
+        var f=0;
+        for(i=0;i<n;i++)          //checking the combinations without one heap to replace it.
+        {    var heap=document.getElementById(i).innerHTML;
+            if((x^heap) < heap)
+            {  f=1;
+                document.getElementById(i).innerHTML=x^heap;
+                var container = document.getElementById("h"+i);
+                container.innerHTML="";
+                value=document.getElementById(i).innerHTML;
+                for (var j=0 ; j < value; ++j) {
+                    var img = new Image();
+                    img.src = "matchstick.png";
+                    container.appendChild(img);}
+                if(value==0)
+                {  img = new Image();
+                    img.src = "matchstick.png";
+                    img.style.opacity=0.0;
+                    container.appendChild(img);
+
+                }
+                break;
+            }
+        }
+        if(f==0)           //executed when user is in the winning position
+                for(i=0;i<n;i++)
+                {
+                    heap=document.getElementById(i).innerHTML;
+                    if(heap>0)
+                    {   --heap;
+                        document.getElementById(i).innerHTML=heap;
+                        var container = document.getElementById("h"+i);
+                        container.innerHTML="";
+                        value=document.getElementById(i).innerHTML;
+                        for (j=0 ; j < value; ++j) {
+                            img = new Image();
+                            img.src = "matchstick.png";
+                            container.appendChild(img);}
+                        if(value==0)
+                        {  img = new Image();
+                            img.src = "matchstick.png";
+                            img.style.opacity=0.0;
+                            container.appendChild(img);
+
+                        }
+                        break;
+                    }
+                }
+        for(i=0;i<n;i++) {        //again enabling the heap buttons
+            value=document.getElementById(i).innerHTML;
+            if(value!=0)
+            document.getElementById(i).disabled = false;
+        }
+        var flag=0;
+        for(i=0;i<n;i++)          //to check whether the computer won
+        {
+            var value=document.getElementById(i).innerHTML;
+            if(value!=0)
+                flag=1;
+        }
+        if(flag==0){alert("Computer wins");location.reload();}
+    }
+</script>
+</body>
+</html>

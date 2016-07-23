@@ -1,0 +1,36 @@
+canvas{
+
+    background-color: white;
+    color:#0d0d0d;
+    cursor:pointer;
+
+}#red{
+     color:red;
+ }
+#blue{
+    color:blue;
+}
+#green{
+    color:green;
+}
+#pink{
+    color:pink;
+}
+#crimson{
+    color:crimson;
+}#yellow{
+     color:yellow;
+ }
+body{
+      text-align:center;
+      background: url(nimback.jpg) center center fixed no-repeat;
+      background-size:100% 100%;
+      color:white;
+  }
+div{
+    float:left;
+    background-color: #0d0d0d;
+   }
+div>span{
+        float:left;
+    }

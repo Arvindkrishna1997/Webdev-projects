@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Graph</title>
+    <link href="graph.css" rel="stylesheet" type="text/css">
+</head>
+<body onload="draw(40)">
+<h2 >Graph Plotter</h2>
+<textarea cols="20" rows="5" id="function">F = function(x) {
+  return Math.sin(x) ;
+    } ;</textarea>
+<br/>
+<button id="derive" onclick="graphfunction()">Draw</button>
+<br/>
+<canvas id="canvas" width="500" height="500"  onmousedown="mousedown()" onmouseup="mouseup()" onmousemove="drag(event)" onmouseout="cleared()"  ></canvas>
+<script>
+    var axes={};
+    var F;
+    var zoom=0;
+    var click=0;
+    var dragx=0,dragy=0;
+    function cleared(){dragx=0;dragy=0; var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");ctx.clearRect(0, 0,500, 500);
+        draw(40);}
+   function mousedown(){click=1;}
+    function mouseup(){click=0;}
+    function drag(e)
+    {   if(click==1) {
+        var c = document.getElementById("canvas");
+        var ctx = c.getContext("2d");
+
+        var oldx = 0, oldy = 0;
+        if (e.movementX < oldx) {
+            direction = "left";
+            dragx = dragx + 10;
+        } else if (e.movementX > oldx) {
+            direction = "right";
+            dragx = dragx - 10;
+        }
+        else if (e.movementY < oldy) {
+            direction = "up";
+            dragy = dragy + 10;
+        }
+        else if (e.movementY > oldy) {
+            direction = "down";
+            dragy = dragy - 10;
+        }
+
+        oldx = e.pageX;
+        oldy = e.pageY;
+        ctx.clearRect(0, 0, 500, 500);
+        draw(40);
+    }
+    };
+    eval(document.getElementById("function").value);
+
+    function graphfunction(){
+      // if(localStorage.setItem("function")==null)
+        localStorage.setItem("function",document.getElementById("function").value);
+        location.reload();
+    }
+    function draw(scale)
+    {    eval(localStorage.getItem("function"));
+         document.getElementById("function").innerHTML=localStorage.getItem("function");
+        var canvas=document.getElementById("canvas");
+        var ctx=canvas.getContext('2d');
+        axes.x0=0.5+0.5*canvas.width+dragx;
+        axes.y0=0.5+0.5*canvas.height+dragy;
+        if(scale+zoom>0)
+        axes.scale=scale+zoom;
+        else axes.scale=1;
+        axes.doNegativeaxis=true;
+        showAxes(ctx,axes);
+        funGraph(ctx,axes,F,"green",1);
+
+    }
+    function showAxes(ctx,axes)
+    {
+        var x0=axes.x0, w=ctx.canvas.width;
+        var y0=axes.y0, h=ctx.canvas.height;
+        var xmin = axes.doNegativeaxis ? 0 : x0;
+        ctx.beginPath();
+        ctx.strokeStyle="rgb(120,120,120)";
+        ctx.moveTo(xmin,y0); ctx.lineTo(w,y0);
+        ctx.moveTo(x0,0);    ctx.lineTo(x0,h);
+        ctx.stroke();
+    }
+    function funGraph(ctx,axes,func,color,thick)
+    {
+        var xx,yy,dx=4,x0=axes.x0,y0=axes.y0,scale=axes.scale;
+        var iMax=Math.round((ctx.canvas.width-x0)/dx);
+        var iMin = axes.doNegativeaxis ? Math.round(-x0/dx) : 0;
+        ctx.beginPath();
+        ctx.lineWidth=thick;
+        ctx.strokeStyle=color;
+        for(var i=iMin;i<=iMax;i++)
+        { xx=i*dx;yy=scale*func(xx/scale);
+          if(i==iMin)ctx.moveTo(x0+xx,y0-yy);
+          else ctx.lineTo(x0+xx,y0-yy);
+
+        }
+        dx=(Math.round(Math.PI*100)*20)/100;
+         iMax=Math.round((ctx.canvas.width-x0)/dx);
+         iMin = axes.doNegativeaxis ? Math.round(-x0/dx) : 0;
+        for( i=iMin;i<=iMax;i++)
+        { xx=i*dx;
+            ctx.fillText(Math.round((xx/scale)*100)/100,x0+xx,y0+10);
+        }
+        ctx.stroke();
+    }
+    window.addEventListener('mousewheel', function(e){
+        var scroll = e.wheelDelta < 0 ? 'down' : 'up';
+        //alert(scroll);
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.clearRect(0, 0,500, 500);
+        if(e.wheelDelta>0)
+             zoom=zoom+5;
+        else
+             zoom=zoom-5;
+        draw(40);
+    });
+</script>
+</body>
+</html>

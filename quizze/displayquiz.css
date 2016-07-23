@@ -1,0 +1,21 @@
+.selected {
+   background-color: #f5f211;
+    animation: blinker 1s linear infinite;
+}
+@keyframes blinker {
+    50% { opacity: 0.0; }
+}
+.correct {
+    background-color: #01ba0b;
+
+}
+@keyframes blinker {
+    50% { opacity:0.0; }
+}
+.wrong {
+    background-color: #971111;
+    animation: blinker 1s linear infinite;
+}
+@keyframes blinker {
+    50% { opacity:0.0; }
+}

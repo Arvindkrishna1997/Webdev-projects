@@ -1,0 +1,57 @@
+.heaps{
+    display:inline-block;
+    background-color:#1e8ad5;
+    border-radius:15px;
+    border:0;
+    height: 2.85em;
+    margin-bottom: 10px;
+    margin-right:50px;
+    margin-left:0px;
+    line-height: 2.95em;
+    padding: 0 1em;
+    text-align:center;
+    cursor:pointer;
+    color:#ffffff;
+    transition: background 0.3s ease-in-out;
+    float:right;
+
+}
+.heaps:disabled{
+    opacity: 0.6;
+    cursor:not-allowed;
+}
+
+html{
+    background: url(unique.jpg) no-repeat center center fixed;
+    background-size:100% 100%;
+    text-align: center;
+    font-family: "Raleway", Helvetica, sans-serif;
+    font-size: 18px;
+    color:#ffffff;
+
+}
+div{
+    display:inline;
+    height:500em;
+}
+#computer{
+    display:block;
+    background-color:#1e8ad5;
+    border-radius:15px;
+    margin-left: 585px;
+    border:0;
+    height: 2.85em;
+    line-height: 2.95em;
+    padding: 0 1em;
+    text-align:center;
+    cursor:pointer;
+    color:#ffffff;
+    transition: background 0.3s ease-in-out;
+}
+#computer:disabled{
+    opacity: 0.6;
+    cursor:not-allowed;
+}
+img{
+    margin-right: 15px;
+}
